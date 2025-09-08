@@ -1,0 +1,24 @@
+/* SC Prosper Sans Font Declaration */
+@font-face {
+  font-family: 'SC Prosper Sans';
+  src: url('../public/fonts/SC Prosper Sans Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Force SC Prosper Sans globally with highest specificity */
+html, body, * {
+  font-family: 'SC Prosper Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif !important;
+}
+
+/* Additional layer to ensure Tailwind classes work */
+@layer base {
+  .font-sc-prosper {
+    font-family: 'SC Prosper Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif !important;
+  }
+}

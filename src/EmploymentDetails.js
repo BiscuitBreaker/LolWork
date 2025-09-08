@@ -1,0 +1,480 @@
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import ProgressBar from "./ProgressBar";
+import {
+  ArrowRight,
+  ArrowLeft,
+  Briefcase,
+  Bot,
+  Upload,
+  FileText,
+} from "lucide-react";
+
+const cities = [
+  "New York",
+  "San Francisco",
+  "London",
+  "Toronto",
+  "Mumbai",
+  "Bengaluru",
+  "Gurugram",
+  "Delhi",
+  "Chennai",
+];
+
+const EmploymentDetails = () => {
+  const [formData, setFormData] = useState({
+    occupationType: "",
+    employerName: "",
+    designation: "",
+    annualIncome: "",
+    workExperience: "",
+    location: "",
+    officeAddress: "",
+    attachments: {
+      salaryProof: null,
+      employmentProof: null,
+      businessProof: null,
+      gstCertificate: null,
+      itr: null,
+      bankStatements: null,
+    },
+  });
+  const [activeTab, setActiveTab] = useState("employment"); // 'employment' or 'attachments'
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleFileChange = (e, attachmentName) => {
+    const file = e.target.files[0];
+    setFormData((prevData) => ({
+      ...prevData,
+      attachments: {
+        ...prevData.attachments,
+        [attachmentName]: file,
+      },
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Employment Details Submitted:", formData);
+    // In a real app, you would save this data and navigate to the next step.
+  };
+
+  const renderEmploymentDetails = () => (
+    <section>
+      <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+        <Briefcase className="w-5 h-5 text-indigo-600" />
+        Work Information
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label
+            htmlFor="occupationType"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Occupation Type
+          </label>
+          <select
+            id="occupationType"
+            name="occupationType"
+            value={formData.occupationType}
+            onChange={handleInputChange}
+            className="mt-1 w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          >
+            <option value="">Select Occupation Type</option>
+            <option value="Employed">Employed</option>
+            <option value="Self-Employed">Self-Employed</option>
+          </select>
+        </div>
+        <div>
+          <label
+            htmlFor="annualIncome"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Annual Income (₹)
+          </label>
+          <input
+            type="number"
+            id="annualIncome"
+            name="annualIncome"
+            placeholder="e.g., 50000"
+            value={formData.annualIncome}
+            onChange={handleInputChange}
+            className="mt-1 w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          />
+        </div>
+      </div>
+
+      {formData.occupationType === "Employed" && (
+        <AnimatePresence>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4"
+          >
+            <div>
+              <label
+                htmlFor="employerName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Employer Name
+              </label>
+              <input
+                type="text"
+                id="employerName"
+                name="employerName"
+                placeholder="e.g., ABC Corp"
+                value={formData.employerName}
+                onChange={handleInputChange}
+                className="mt-1 w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="designation"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Designation
+              </label>
+              <input
+                type="text"
+                id="designation"
+                name="designation"
+                placeholder="e.g., Software Engineer"
+                value={formData.designation}
+                onChange={handleInputChange}
+                className="mt-1 w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="workExperience"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Work Experience (in years)
+              </label>
+              <input
+                type="number"
+                id="workExperience"
+                name="workExperience"
+                placeholder="e.g., 5"
+                value={formData.workExperience}
+                onChange={handleInputChange}
+                className="mt-1 w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="location"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Location
+              </label>
+              <select
+                id="location"
+                name="location"
+                value={formData.location}
+                onChange={handleInputChange}
+                className="mt-1 w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              >
+                <option value="">Select a City</option>
+                {cities.map((city, index) => (
+                  <option key={index} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="col-span-1 md:col-span-2">
+              <label
+                htmlFor="officeAddress"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Office Address
+              </label>
+              <textarea
+                id="officeAddress"
+                name="officeAddress"
+                placeholder="Office Address"
+                rows="3"
+                value={formData.officeAddress}
+                onChange={handleInputChange}
+                className="mt-1 w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              ></textarea>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      )}
+
+      {formData.occupationType === "Self-Employed" && (
+        <AnimatePresence>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4"
+          >
+            <div>
+              <label
+                htmlFor="employerName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Business Name
+              </label>
+              <input
+                type="text"
+                id="employerName"
+                name="employerName"
+                placeholder="e.g., My Cafe"
+                value={formData.employerName}
+                onChange={handleInputChange}
+                className="mt-1 w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="workExperience"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Business Experience (in years)
+              </label>
+              <input
+                type="number"
+                id="workExperience"
+                name="workExperience"
+                placeholder="e.g., 5"
+                value={formData.workExperience}
+                onChange={handleInputChange}
+                className="mt-1 w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="officeAddress"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Business Address
+              </label>
+              <textarea
+                id="officeAddress"
+                name="officeAddress"
+                placeholder="Business Address"
+                rows="3"
+                value={formData.officeAddress}
+                onChange={handleInputChange}
+                className="mt-1 w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              ></textarea>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      )}
+    </section>
+  );
+
+  const renderAttachments = () => {
+    const isEmployed = formData.occupationType === "Employed";
+    const isSelfEmployed = formData.occupationType === "Self-Employed";
+
+    const requiredAttachments = [];
+    if (isEmployed) {
+      requiredAttachments.push({
+        name: "salaryProof",
+        label: "Salary Proof (Latest Pay Slips)",
+      });
+      requiredAttachments.push({
+        name: "employmentProof",
+        label: "Employment Proof (Offer Letter)",
+      });
+    }
+    if (isSelfEmployed) {
+      requiredAttachments.push({
+        name: "businessProof",
+        label: "Business Proof",
+      });
+      requiredAttachments.push({
+        name: "gstCertificate",
+        label: "GST Certificate",
+      });
+    }
+    if (isEmployed || isSelfEmployed) {
+      requiredAttachments.push({ name: "itr", label: "2-3 Years ITR" });
+      requiredAttachments.push({
+        name: "bankStatements",
+        label: "6 Months Bank Statements",
+      });
+    }
+
+    return (
+      <section>
+        <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <Upload className="w-5 h-5 text-indigo-600" />
+          Required Attachments
+        </h2>
+        <p className="text-sm text-gray-600 mb-4">
+          Please upload the documents relevant to your occupation.
+        </p>
+
+        {requiredAttachments.length === 0 ? (
+          <p className="text-sm text-gray-600 text-center py-8 bg-gray-50 rounded-md">
+            Please select an occupation type to see required documents.
+          </p>
+        ) : (
+          <div className="space-y-4">
+            {requiredAttachments.map((doc, index) => (
+              <div
+                key={index}
+                className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-50 rounded-md border border-gray-200"
+              >
+                <label
+                  htmlFor={doc.name}
+                  className="block text-sm font-medium text-gray-700 sm:w-1/3"
+                >
+                  {doc.label}
+                </label>
+                <div className="mt-2 sm:mt-0 sm:w-2/3 flex items-center gap-2">
+                  <input
+                    type="file"
+                    id={doc.name}
+                    name={doc.name}
+                    onChange={(e) => handleFileChange(e, doc.name)}
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                  />
+                  {formData.attachments[doc.name] && (
+                    <span className="text-xs text-gray-500 flex-shrink-0">
+                      {formData.attachments[doc.name].name}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+    );
+  };
+  const navigate = useNavigate();
+  return (
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4 sm:p-6 font-sans">
+      <ProgressBar currentStep={2} />
+      <button
+        onClick={() => navigate(-1)}
+        className="fixed top-4 left-4 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-lg text-gray-700 hover:bg-gray-200 transition-colors transform hover:scale-105"
+      >
+        <ArrowLeft className="w-5 h-5" />
+        Back
+      </button>
+      <div className="flex flex-col max-w-[88rem] md:flex-row w-full gap-8 items-start">
+        {/* Main form container */}
+        <div className="w-full md:w-3/4 bg-white rounded-2xl shadow-2xl overflow-hidden p-6 sm:p-10">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+            Employment Details
+          </h1>
+          <p className="text-sm text-gray-600 mb-6">
+            Tell us about your professional background and financial situation.
+          </p>
+
+          <div className="flex border-b border-gray-200 mb-8">
+            <button
+              type="button"
+              onClick={() => setActiveTab("employment")}
+              className={`flex-1 py-3 px-1 text-center font-medium text-sm transition-colors duration-200 border-b-2 ${
+                activeTab === "employment"
+                  ? "border-indigo-600 text-indigo-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              <span className="flex items-center justify-center gap-2">
+                <Briefcase className="w-4 h-4" /> Employment
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("attachments")}
+              className={`flex-1 py-3 px-1 text-center font-medium text-sm transition-colors duration-200 border-b-2 ${
+                activeTab === "attachments"
+                  ? "border-indigo-600 text-indigo-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              <span className="flex items-center justify-center gap-2">
+                <FileText className="w-4 h-4" /> Attachments
+              </span>
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="min-h-[600px]"
+              >
+                {activeTab === "employment"
+                  ? renderEmploymentDetails()
+                  : renderAttachments()}
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="flex justify-between mt-6">
+              <button
+                type="button"
+                onClick={() => console.log("Navigate back to Personal Details")} // Simulate back button
+                className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Previous
+              </button>
+              <Link
+                to="/loandetails"
+                className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200"
+              >
+                Next
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Link>
+            </div>
+          </form>
+        </div>
+
+        {/* Floating Chatbot Companion */}
+        <div className="hidden md:block md:w-2/5 h-[80vh] bg-white rounded-2xl shadow-2xl p-6 border border-gray-200 overflow-y-auto sticky top-4">
+          <div className="flex items-center gap-3 text-indigo-600 mb-4 border-b pb-4">
+            <Bot className="w-6 h-6" />
+            <h3 className="text-lg font-bold">Your Loan Companion</h3>
+          </div>
+          <div className="text-gray-700 space-y-4">
+            <p>Hi there! I'm here to help you with your loan application.</p>
+            <p>
+              Feel free to ask me any questions you have about the process or
+              the documents you need to submit.
+            </p>
+            <div className="p-4 bg-indigo-50 rounded-lg">
+              <p className="text-sm">
+                This is a placeholder for a live chatbot interface.
+              </p>
+              <p className="text-sm mt-2 text-indigo-800">
+                Possible functionality: Answer FAQs, guide through form fields,
+                check loan eligibility in real-time.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default EmploymentDetails;
